@@ -15,12 +15,11 @@ class BookFactory extends Factory
      */
     public function definition():array
     {
-        $authors = $this->faker->randomElements([$this->faker->name, $this->faker->name], 2);
         static $i = 0;
         return [
             'id'        => $i++,
             'publisher' => $this->faker->company(),
-            'authors'   => is_array($authors) ? implode(',', $authors) : $authors,
+            'authors'   => $this->faker->randomElement([$this->faker->name,$this->faker->name]),
             'title'     => $this->faker->sentence(2),
             'summary'   => $this->faker->sentence(50)
         ];

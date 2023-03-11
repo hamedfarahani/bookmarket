@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\Book;
+use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
 
 
@@ -42,10 +44,10 @@ class StoreElasticCommand extends Command
     public function handle()
     {
 
-        $client = ClientBuilder::create()->setHosts(['elasticsearch:9200'])->build();
+        $client = App::make(Client::class);
 
 
-        $chunkSize = 5000; // number of records to insert per chunk
+        $chunkSize   = 5000; // number of records to insert per chunk
         $totalChunks = 200; // total number of chunks to insert
 
         for ($i = 1; $i <= $totalChunks; $i++) {
@@ -57,7 +59,7 @@ class StoreElasticCommand extends Command
                 $params['body'][] = [
                     'index' => [
                         '_index' => 'books',
-                        '_id' => $book->id,
+                        '_id'    => $book->id,
                     ],
                 ];
                 $params['body'][] = $book->toArray();
@@ -65,9 +67,9 @@ class StoreElasticCommand extends Command
 
             $client->bulk($params);
 
-        $this->info("Inserted chunk $i of $totalChunks");
+            $this->info("Inserted chunk $i of $totalChunks");
         }
 
-    $this->info('Inserted 1 million books into Elasticsearch');
+        $this->info('Inserted 1 million books into Elasticsearch');
     }
 }

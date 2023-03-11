@@ -13,13 +13,13 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libpq-dev
 
-COPY . .
-
 RUN docker-php-ext-install pdo mbstring zip bcmath exif pcntl xml curl gd opcache pgsql pdo_pgsql
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-COPY ./composer.json ./
+COPY . .
 RUN composer install --no-scripts --no-autoloader --prefer-dist --no-dev --working-dir=/var/www/html
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R ug+rwx storage bootstrap/cache
+
 EXPOSE 9000
 EXPOSE 9001
 CMD ["php-fpm"]
