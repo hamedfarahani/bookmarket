@@ -9,7 +9,7 @@ services:
         restart: always
         volumes:
             - .:/var/www/html
-        command: bash -c "mv .env.example .env && composer i && php artisan key:generate &&  php-fpm"
+        command: bash -c "composer i && php artisan key:generate &&  php-fpm"
         depends_on:
             - elasticsearch
             - nginx
@@ -53,20 +53,6 @@ services:
         volumes:
             - ./default.conf:/etc/nginx/conf.d/default.conf
             - .:/var/www/html
-    postgres:
-        image: postgres:latest
-        container_name: book.postgres
-        restart: always
-        environment:
-            POSTGRES_DB: odin
-            POSTGRES_USER: odin
-            POSTGRES_PASSWORD: secret
-        volumes:
-            - /var/lib/postgresql/data:/var/lib/postgresql/data
-        networks:
-            - book_netwotk
-        ports:
-            - "5433:5432"
 networks:
     book_netwotk:
         driver: bridge

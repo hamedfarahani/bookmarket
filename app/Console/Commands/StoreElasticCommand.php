@@ -24,7 +24,7 @@ class StoreElasticCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'store 1 million books in elastic';
 
     /**
      * Create a new command instance.

@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Services\Interfaces\BookServiceInterface;
 use Elastic\Elasticsearch\Client;
+use Throwable;
 
 class BookService implements BookServiceInterface
 {
@@ -18,22 +19,27 @@ class BookService implements BookServiceInterface
 
     public function search($keyword)
     {
-        $params = [
-            'index' => 'books',
-            'body' => [
-                'query' => [
-                    'multi_match' => [
-                        'query' => $keyword,
-                        'fields' => ['title', 'summary', 'publisher', 'authors'],
+        try {
+            $params = [
+                'index' => 'books',
+                'body'  => [
+                    'query'   => [
+                        'multi_match' => [
+                            'query'  => $keyword,
+                            'fields' => ['title', 'summary', 'publisher', 'authors'],
+                        ],
                     ],
+                    '_source' => ['id', 'title', 'summary', 'publisher', 'authors']
                 ],
-                '_source' => ['id', 'title', 'summary', 'publisher', 'authors']
-            ],
-        ];
+            ];
 
-        $response = $this->client->search($params);
-        $books = collect($response['hits']['hits'])->pluck('_source')->all();
+            $response = $this->client->search($params);
+            $books    = collect($response['hits']['hits'])->pluck('_source')->all();
 
-        return $books;
+            return $books;
+        } catch (Throwable $throwable) {
+
+        }
+
     }
 }

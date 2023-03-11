@@ -25,6 +25,9 @@ define startup
 	docker-compose -f $(COMPOSE_FILES) exec php_stage sh -c '/home/$(USER)/startup.sh'
 endef
 
+start:
+	docker-compose -f $(COMPOSE_FILES) exec app sh -c '/bin/sh start.sh'
+
 build:
 	docker-compose -f $(COMPOSE_FILES) up -d --build
 
@@ -38,6 +41,9 @@ destroy:
 status:
 	docker-compose -f $(COMPOSE_FILES) ps
 
+shell:
+	docker-compose -f $(COMPOSE_FILES) exec --user=$(shell echo $$(id -u)':'$$(id -g)) php sh
+
 shell-as-root:
 	docker-compose -f $(COMPOSE_FILES) exec php sh
 
@@ -47,6 +53,5 @@ update:
 test:
 	docker-compose -f $(COMPOSE_FILES) exec app php artisan test
 
-
-run:
+store:
 	docker-compose -f $(COMPOSE_FILES) exec app php artisan book:store
