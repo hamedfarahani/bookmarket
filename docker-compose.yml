@@ -9,7 +9,7 @@ services:
         restart: always
         volumes:
             - .:/var/www/html
-        command: bash -c "mv .env.example .env && composer i && php artisan key:generate &&  php-fpm"
+        command: bash -c "cp .env.example .env && composer i && php artisan key:generate &&  php-fpm"
         depends_on:
             - elasticsearch
             - nginx
